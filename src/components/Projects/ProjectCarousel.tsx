@@ -136,38 +136,19 @@ export default function ProjectCarousel() {
     }),
     [],
   );
-const [
-  isCarouselVisible,
-  setIsCarouselVisible,
-] = useState(false);
-const [
-  isTransitioning,
-  setIsTransitioning,
-] = useState(false);
+
   const changeProject = useCallback(
-  (
-    nextIndex: number,
-    nextDirection: 1 | -1,
-  ) => {
-    if (isTransitioning) {
-      return;
-    }
-
-    setIsTransitioning(true);
-    setDirection(nextDirection);
-    setActiveIndex(wrapIndex(nextIndex));
-    setHasInteracted(true);
-    setLogoFailed(false);
-
-    window.setTimeout(() => {
-      setIsTransitioning(false);
-    }, reducedMotion ? 280 : 760);
-  },
-  [
-    isTransitioning,
-    reducedMotion,
-  ],
-);
+    (
+      nextIndex: number,
+      nextDirection: 1 | -1,
+    ) => {
+      setDirection(nextDirection);
+      setActiveIndex(wrapIndex(nextIndex));
+      setHasInteracted(true);
+      setLogoFailed(false);
+    },
+    [],
+  );
 
   const showNextProject = useCallback(() => {
     changeProject(activeIndex + 1, 1);
@@ -205,49 +186,16 @@ const [
     },
     [activeProject.id, openProject],
   );
-useEffect(() => {
-  const section = sectionRef.current;
 
-  if (!section) {
-    return;
-  }
-
-  const observer =
-    new IntersectionObserver(
-      ([entry]) => {
-        setIsCarouselVisible(
-          entry.isIntersecting &&
-            entry.intersectionRatio > 0.18,
-        );
-      },
-      {
-        threshold: [
-          0,
-          0.18,
-          0.45,
-        ],
-        rootMargin:
-          "100px 0px 100px 0px",
-      },
-    );
-
-  observer.observe(section);
-
-  return () => {
-    observer.disconnect();
-  };
-}, []);
   useEffect(() => {
     if (
-  isPaused ||
-  reducedMotion ||
-  !isPageVisible ||
-  !isCarouselVisible ||
-  isTransitioning ||
-  visibleProjects.length <= 1
-) {
-  return;
-}
+      isPaused ||
+      reducedMotion ||
+      !isPageVisible ||
+      visibleProjects.length <= 1
+    ) {
+      return;
+    }
 
     autoplayTimerRef.current =
       window.setTimeout(() => {
@@ -270,13 +218,12 @@ useEffect(() => {
       }
     };
   }, [
-  activeIndex,
-  isPaused,
-  reducedMotion,
-  isPageVisible,
-  isCarouselVisible,
-  isTransitioning,
-]);
+    activeIndex,
+    isPaused,
+    reducedMotion,
+    isPageVisible,
+  ]);
+
   useEffect(() => {
     const handleKeyDown = (
       event: KeyboardEvent,
@@ -346,57 +293,45 @@ useEffect(() => {
   };
 
   const transitionVariants = reducedMotion
-  ? {
-      enter: {
-        opacity: 0,
-      },
+    ? {
+        enter: { opacity: 0 },
+        center: { opacity: 1 },
+        exit: { opacity: 0 },
+      }
+    : {
+        enter: (
+          slideDirection: number,
+        ) => ({
+          opacity: 0,
+          rotateY:
+            slideDirection > 0 ? 52 : -52,
+          x:
+            slideDirection > 0
+              ? "24%"
+              : "-24%",
+          scale: 0.9,
+        }),
 
-      center: {
-        opacity: 1,
-      },
+        center: {
+          opacity: 1,
+          rotateY: 0,
+          x: 0,
+          scale: 1,
+        },
 
-      exit: {
-        opacity: 0,
-      },
-    }
-  : {
-      enter: (
-        slideDirection: number,
-      ) => ({
-        opacity: 0,
-        rotateY:
-          slideDirection > 0
-            ? 34
-            : -34,
-        x:
-          slideDirection > 0
-            ? "16%"
-            : "-16%",
-        scale: 0.94,
-      }),
-
-      center: {
-        opacity: 1,
-        rotateY: 0,
-        x: 0,
-        scale: 1,
-      },
-
-      exit: (
-        slideDirection: number,
-      ) => ({
-        opacity: 0,
-        rotateY:
-          slideDirection > 0
-            ? -34
-            : 34,
-        x:
-          slideDirection > 0
-            ? "-16%"
-            : "16%",
-        scale: 0.94,
-      }),
-    };
+        exit: (
+          slideDirection: number,
+        ) => ({
+          opacity: 0,
+          rotateY:
+            slideDirection > 0 ? -52 : 52,
+          x:
+            slideDirection > 0
+              ? "-24%"
+              : "24%",
+          scale: 0.9,
+        }),
+      };
 
   return (
     <>
@@ -439,30 +374,28 @@ useEffect(() => {
 
         <div className="project-carousel-stage">
           <button
-  type="button"
-  className="project-carousel-arrow project-carousel-arrow-left"
-  onClick={showPreviousProject}
-  disabled={isTransitioning}
-  aria-label="Show previous project"
->
-  <ArrowLeft size={21} />
-</button>
+            type="button"
+            className="project-carousel-arrow project-carousel-arrow-left"
+            onClick={showPreviousProject}
+            aria-label="Show previous project"
+          >
+            <ArrowLeft size={21} />
+          </button>
 
           <button
-  type="button"
-  className="project-carousel-preview project-carousel-preview-left"
-  onClick={showPreviousProject}
-  disabled={isTransitioning}
-  aria-label={`Show ${previousProject.title}`}
->
-  <span>
-    {previousProject.number}
-  </span>
+            type="button"
+            className="project-carousel-preview project-carousel-preview-left"
+            onClick={showPreviousProject}
+            aria-label={`Show ${previousProject.title}`}
+          >
+            <span>
+              {previousProject.number}
+            </span>
 
-  <strong>
-    {previousProject.shortTitle}
-  </strong>
-</button>
+            <strong>
+              {previousProject.shortTitle}
+            </strong>
+          </button>
 
           <div className="project-carousel-perspective">
             <AnimatePresence
@@ -482,7 +415,7 @@ useEffect(() => {
                 transition={{
                   duration: reducedMotion
                     ? 0.25
-                    : 0.72,
+                    : 0.9,
                   ease: [
                     0.16,
                     1,
@@ -632,72 +565,62 @@ useEffect(() => {
             </AnimatePresence>
           </div>
 
-         <button
-  type="button"
-  className="project-carousel-preview project-carousel-preview-right"
-  onClick={showNextProject}
-  disabled={isTransitioning}
-  aria-label={`Show ${nextProject.title}`}
->
-  <span>
-    {nextProject.number}
-  </span>
+          <button
+            type="button"
+            className="project-carousel-preview project-carousel-preview-right"
+            onClick={showNextProject}
+            aria-label={`Show ${nextProject.title}`}
+          >
+            <span>
+              {nextProject.number}
+            </span>
 
-  <strong>
-    {nextProject.shortTitle}
-  </strong>
-</button>
+            <strong>
+              {nextProject.shortTitle}
+            </strong>
+          </button>
 
-         <button
-  type="button"
-  className="project-carousel-arrow project-carousel-arrow-right"
-  onClick={showNextProject}
-  disabled={isTransitioning}
-  aria-label="Show next project"
->
-  <ArrowRight size={21} />
-</button>
+          <button
+            type="button"
+            className="project-carousel-arrow project-carousel-arrow-right"
+            onClick={showNextProject}
+            aria-label="Show next project"
+          >
+            <ArrowRight size={21} />
+          </button>
         </div>
 
         <div className="project-carousel-footer">
-         <div className="project-carousel-dots">
-  {visibleProjects.map(
-    (project, index) => (
-      <button
-        key={project.id}
-        type="button"
-        disabled={
-          isTransitioning ||
-          index === activeIndex
-        }
-        className={
-          index === activeIndex
-            ? "active"
-            : ""
-        }
-        onClick={() => {
-          const nextDirection: 1 | -1 =
-            index > activeIndex
-              ? 1
-              : -1;
+          <div className="project-carousel-dots">
+            {visibleProjects.map(
+              (project, index) => (
+                <button
+                  key={project.id}
+                  type="button"
+                  className={
+                    index === activeIndex
+                      ? "active"
+                      : ""
+                  }
+                  onClick={() => {
+                    const nextDirection =
+                      index >
+                      activeIndex
+                        ? 1
+                        : -1;
 
-          changeProject(
-            index,
-            nextDirection,
-          );
-        }}
-        aria-label={`Show ${project.title}`}
-        aria-current={
-          index === activeIndex
-            ? "true"
-            : undefined
-        }
-      >
-        <span />
-      </button>
-    ),
-  )}
-</div>
+                    changeProject(
+                      index,
+                      nextDirection,
+                    );
+                  }}
+                  aria-label={`Show ${project.title}`}
+                >
+                  <span />
+                </button>
+              ),
+            )}
+          </div>
 
           <button
             type="button"
@@ -724,11 +647,11 @@ useEffect(() => {
           <div className="project-carousel-hint">
             DRAG OR USE ← →
             {hasInteracted && (
-  <span>
-    {" "}
-    // MANUAL CONTROL
-  </span>
-)}
+              <span>
+                {" "}
+                
+              </span>
+            )}
           </div>
         </div>
       </section>
@@ -890,22 +813,12 @@ useEffect(() => {
         }
 
         .project-carousel-card {
-  position: absolute;
-  inset: 0;
-  transform-origin: center;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-  .project-carousel-arrow:disabled,
-.project-carousel-preview:disabled,
-.project-carousel-dots button:disabled {
-  pointer-events: none;
-}
-
-.project-carousel-arrow:disabled {
-  opacity: 0.62;
-}
+          position: absolute;
+          inset: 0;
+          transform-origin: center;
+          transform-style: preserve-3d;
+          will-change: transform, opacity;
+        }
 
         .project-carousel-card-button {
           width: 100%;
@@ -934,22 +847,7 @@ useEffect(() => {
               rgba(73, 104, 205, 0.025);
           cursor: pointer;
         }
-.project-carousel-arrow:disabled,
-.project-carousel-preview:disabled,
-.project-carousel-dots button:disabled {
-  pointer-events: none;
-  cursor: default;
-}
 
-.project-carousel-arrow:disabled,
-.project-carousel-preview:disabled {
-  opacity: 0.58;
-}
-
-.project-carousel-dots
-  button.active:disabled {
-  opacity: 1;
-}
         .project-carousel-visual {
           position: relative;
           min-width: 0;
