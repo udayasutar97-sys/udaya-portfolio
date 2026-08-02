@@ -486,8 +486,8 @@ export const projects: Project[] = [
     id: "weatherx",
     number: "07",
 
-    title: "WEATHERX",
-    shortTitle: "WEATHERX",
+    title: "WEATHER X",
+    shortTitle: "WEATHER X",
     category: "API & DATA VISUALISATION",
     liveDemo:"https://udayasutar97-sys.github.io/weatherx/",
 
