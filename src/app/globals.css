@@ -7024,3 +7024,371 @@ body.project-experience-active .planet-portal {
       rgba(108, 145, 218, 0.12);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   COMPACT LAPTOP MODE
+   Keeps every major section inside one viewport on laptops
+   with limited vertical height.
+   ========================================================= */
+
+@media (min-width: 901px) and (max-height: 820px) {
+  /* Allow one-screen sections to actually shrink */
+  .hero,
+  .project-carousel-section,
+  .about-section,
+  #achievements,
+  .trajectory-section {
+    height: 100svh !important;
+    min-height: 0 !important;
+    max-height: 100svh !important;
+    overflow: hidden !important;
+  }
+
+  /* -------------------------------------------------------
+     HERO
+     ------------------------------------------------------- */
+
+  .hero {
+    padding-top: 0 !important;
+  }
+
+  .topbar {
+    top: clamp(18px, 3vh, 30px) !important;
+  }
+
+  .hero-content {
+    transform: scale(0.88);
+    transform-origin: left center;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(
+      76px,
+      10.5vw,
+      150px
+    ) !important;
+
+    line-height: 0.79 !important;
+  }
+
+  .hero-description {
+    margin-top: clamp(
+      18px,
+      2.4vh,
+      28px
+    ) !important;
+  }
+
+  .hero-description .summary {
+    max-width: 580px !important;
+
+    font-size: clamp(
+      10px,
+      0.88vw,
+      13px
+    ) !important;
+
+    line-height: 1.6 !important;
+  }
+
+  .hero-buttons {
+    margin-top: clamp(
+      18px,
+      2.5vh,
+      28px
+    ) !important;
+  }
+
+  .hero-data {
+    transform: scale(0.86);
+    transform-origin: bottom center;
+  }
+
+  .interactive-hud {
+    transform: scale(0.82);
+    transform-origin: center center;
+  }
+
+  .scroll-indicator {
+    transform: scale(0.86);
+    transform-origin: right bottom;
+  }
+
+  /* -------------------------------------------------------
+     PROJECT CAROUSEL
+     ------------------------------------------------------- */
+
+  .project-carousel-section {
+    padding:
+      34px
+      clamp(18px, 2.6vw, 38px)
+      16px !important;
+
+    gap: 10px !important;
+  }
+
+  .project-carousel-header h2 {
+    font-size: clamp(
+      30px,
+      3.4vw,
+      49px
+    ) !important;
+  }
+
+  .project-carousel-stage {
+    min-height: 0 !important;
+  }
+
+  .project-carousel-perspective {
+    min-height: 0 !important;
+    height: 100% !important;
+  }
+
+  .project-carousel-copy {
+    padding:
+      22px
+      26px !important;
+  }
+
+  .project-carousel-status-row {
+    margin-bottom: 9px !important;
+  }
+
+  .project-carousel-category {
+    margin-bottom: 9px !important;
+  }
+
+  .project-title-short {
+    font-size: clamp(
+      37px,
+      4.2vw,
+      61px
+    ) !important;
+  }
+
+  .project-title-medium {
+    font-size: clamp(
+      31px,
+      3.7vw,
+      52px
+    ) !important;
+  }
+
+  .project-title-long {
+    font-size: clamp(
+      25px,
+      3vw,
+      42px
+    ) !important;
+  }
+
+  .project-carousel-summary {
+    margin-top: 12px !important;
+
+    font-size: clamp(
+      9px,
+      0.75vw,
+      11px
+    ) !important;
+
+    line-height: 1.52 !important;
+  }
+
+  .project-carousel-technologies {
+    margin-top: 12px !important;
+  }
+
+  .project-carousel-technologies span {
+    min-height: 23px !important;
+  }
+
+  .project-carousel-open {
+    padding-top: 10px !important;
+  }
+
+  .project-carousel-logo-shell {
+    width: min(42%, 175px) !important;
+  }
+
+  /* -------------------------------------------------------
+     ABOUT
+     ------------------------------------------------------- */
+
+  .about-section {
+    padding:
+      38px
+      clamp(28px, 4vw, 62px)
+      22px !important;
+
+    gap: clamp(
+      28px,
+      4vw,
+      58px
+    ) !important;
+  }
+
+  .about-heading h2 {
+    font-size: clamp(
+      48px,
+      6vw,
+      82px
+    ) !important;
+
+    line-height: 0.9 !important;
+  }
+
+  .large-copy {
+    font-size: clamp(
+      23px,
+      2.7vw,
+      38px
+    ) !important;
+
+    line-height: 1.12 !important;
+  }
+
+  .about-columns {
+    margin-top: 20px !important;
+  }
+
+  .about-columns p {
+    font-size: clamp(
+      9px,
+      0.78vw,
+      12px
+    ) !important;
+
+    line-height: 1.55 !important;
+  }
+
+  .skill-list {
+    margin-top: 22px !important;
+  }
+
+  .skill-list > div {
+    min-height: 35px !important;
+
+    padding:
+      7px
+      10px !important;
+  }
+
+  /* -------------------------------------------------------
+     ACHIEVEMENTS
+     The inner component keeps its design, but scales slightly.
+     ------------------------------------------------------- */
+
+  #achievements {
+    padding-top: 34px !important;
+    padding-bottom: 18px !important;
+  }
+
+  #achievements > * {
+    transform-origin: center center;
+  }
+
+  /* -------------------------------------------------------
+     TRAJECTORY
+     Your existing short-laptop rules remain active.
+     ------------------------------------------------------- */
+
+  .trajectory-section {
+    min-height: 0 !important;
+
+    padding:
+      34px
+      clamp(24px, 3vw, 48px)
+      16px !important;
+
+    gap: 13px !important;
+  }
+}
+
+/* =========================================================
+   VERY SHORT LAPTOP WINDOWS
+   Example: browser viewport around 600–700px tall
+   ========================================================= */
+
+@media (min-width: 901px) and (max-height: 700px) {
+  .hero-content {
+    transform: scale(0.78);
+  }
+
+  .interactive-hud {
+    transform: scale(0.72);
+  }
+
+  .hero-data {
+    transform: scale(0.76);
+  }
+
+  .project-carousel-section {
+    padding-top: 24px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .project-carousel-copy {
+    padding:
+      16px
+      22px !important;
+  }
+
+  .project-carousel-logo-shell {
+    width: min(38%, 150px) !important;
+  }
+
+  .about-section {
+    padding-top: 28px !important;
+    padding-bottom: 14px !important;
+  }
+
+  .skill-list > div {
+    min-height: 30px !important;
+    padding-block: 5px !important;
+  }
+
+  .trajectory-section {
+    padding-top: 26px !important;
+    padding-bottom: 12px !important;
+  }
+}
