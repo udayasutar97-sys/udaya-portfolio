@@ -162,39 +162,70 @@ export default function InteractiveHUD() {
     !isCoarsePointer;
 
   const continuousAnimation =
-    quality === "high" &&
-    !reducedMotion &&
-    isPageVisible;
+  quality !== "low" &&
+  !reducedMotion &&
+  isPageVisible;
 
   useEffect(() => {
-    if (!hudEnabled) {
+  if (!hudEnabled || !isPageVisible) {
+    return;
+  }
+
+  let animationFrame: number | null =
+    null;
+
+  let latestX = 0;
+  let latestY = 0;
+
+  const updateCursor = () => {
+    setCursor({
+      x: latestX,
+      y: latestY,
+    });
+
+    animationFrame = null;
+  };
+
+  const handlePointerMove = (
+    event: PointerEvent,
+  ) => {
+    latestX = Math.round(event.clientX);
+    latestY = Math.round(event.clientY);
+
+    if (animationFrame !== null) {
       return;
     }
 
-    const handlePointerMove = (
-      event: PointerEvent,
-    ) => {
-      setCursor({
-        x: Math.round(event.clientX),
-        y: Math.round(event.clientY),
-      });
-    };
+    animationFrame =
+      window.requestAnimationFrame(
+        updateCursor,
+      );
+  };
 
-    window.addEventListener(
+  window.addEventListener(
+    "pointermove",
+    handlePointerMove,
+    {
+      passive: true,
+    },
+  );
+
+  return () => {
+    window.removeEventListener(
       "pointermove",
       handlePointerMove,
-      {
-        passive: true,
-      },
     );
 
-    return () => {
-      window.removeEventListener(
-        "pointermove",
-        handlePointerMove,
+    if (animationFrame !== null) {
+      window.cancelAnimationFrame(
+        animationFrame,
       );
-    };
-  }, [hudEnabled]);
+    }
+  };
+}, [
+  hudEnabled,
+  isPageVisible,
+]);
 
   useEffect(() => {
     if (!hudEnabled || !isPageVisible) {
@@ -424,7 +455,7 @@ export default function InteractiveHUD() {
         </button>
       </DraggablePanel>
 
-      {quality === "high" && (
+      
         <DraggablePanel
           className="hud-panel-instructions"
           initialX={0}
@@ -463,7 +494,7 @@ export default function InteractiveHUD() {
             </span>
           </div>
         </DraggablePanel>
-      )}
+      
     </div>
   );
 }
