@@ -781,8 +781,8 @@ gap: 8px;
 }
 
 * { 
-* box-sizing: border-box; 
-* }
+box-sizing: border-box; 
+}
 
 
 
@@ -1745,7 +1745,8 @@ padding: 38px;
 
 .hud-panel-coordinates, 
 .hud-panel-instructions { 
-display: none; 
+display: none; }
+
 .planet-portal-title { 
 left: 4vw; 
 width: 300px; 
@@ -1766,7 +1767,7 @@ left: 4vw;
 .portal-project-drawer { 
 width: 390px; 
 } 
-}
+
 
 .hud-panel-core { 
 width: 185px; 
@@ -5848,16 +5849,17 @@ transform: none !important;
 display: none !important; 
 }
 
-/* Disable drag cursor states / 
-.space-dragging, 
-.planet-hovering, 
-.planet-portal-world-dragging { 
-cursor: default !important; 
-} 
-} 
-/  
-MOBILE NAVIGATION 
- */
+/* Disable drag cursor states */
+
+.space-dragging,
+.planet-hovering,
+.planet-portal-world-dragging {
+  cursor: default !important;
+}
+
+}
+
+/* MOBILE NAVIGATION */
 
 .mobile-navigation { 
 display: none; 
@@ -6086,19 +6088,18 @@ display: none !important;
 display: none !important; 
 }
 
-/* Remove empty space left behind / 
-.hero { 
-padding-top: 0 !important; 
-} 
-} 
+/* Remove empty space left behind */
+
+.hero {
+  padding-top: 0 !important;
+}
+
+}
 @media (max-width: 900px) { 
 .hero-content { 
 margin-top: 0 !important; 
 } 
 } 
-/  
-HIDE CAROUSEL ARROWS ON MOBILE 
- */
 
 @media (max-width: 900px) { 
 .project-carousel-arrow, 
@@ -7574,21 +7575,16 @@ scroll-snap-stop: normal !important;
 * Let sections grow naturally when their content genuinely
 * cannot fit inside the browser's usable viewport. 
 * */ 
-* .regular-scroll-mode .hero, 
-* .regular-scroll-mode 
-* .project-carousel-section, 
-* .regular-scroll-mode 
-* .about-section, 
-* .regular-scroll-mode 
-* #achievements, 
-* .regular-scroll-mode 
-* .trajectory-section { 
-* height: auto !important; 
-* max-height: none !important; 
-* min-height: 100svh !important; 
-* overflow: visible !important; 
-* }
-
+.regular-scroll-mode .hero,
+.regular-scroll-mode .project-carousel-section,
+.regular-scroll-mode .about-section,
+.regular-scroll-mode #achievements,
+.regular-scroll-mode .trajectory-section {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 100svh !important;
+  overflow: visible !important;
+}
 
 
 
@@ -7804,9 +7800,9 @@ z-index: 12 !important;
 * Prevent the panel from interfering with the hero buttons
 * even after it has been dragged. 
 * */ 
-* .hud-panel-instructions { 
-* max-height: min(255px, 34vh); 
-* }
+.hud-panel-instructions {
+  max-height: min(255px, 34vh);
+}
 
 /* --------------------------------------------------------- 
 LARGE LAPTOPS / DESKTOPS 
@@ -8078,36 +8074,38 @@ padding-inline: clamp(
 /*
 * Keep the main HUD panels visible, but slightly compact. 
 * */ 
-* .hud-panel-coordinates, 
-* .hud-panel-core, 
-* .hud-panel-network { 
-* scale: 0.84; 
-* }
+.hud-panel-coordinates,
+.hud-panel-core,
+.hud-panel-network {
+  transform: scale(0.84);
+  transform-origin: center;
+}
 
 /*
 * Move the interaction panel away from the buttons. 
 * */ 
-* .hud-panel-instructions { 
-* right: clamp( 
-* 18px, 
-* 2.4vw, 
-* 34px 
-* ) !important;
+.hud-panel-instructions {
+  right: clamp(
+    18px,
+    2.4vw,
+    34px
+  ) !important;
 
-bottom: clamp(
-  18px,
-  2.8vh,
-  30px
-) !important;
+  bottom: clamp(
+    18px,
+    2.8vh,
+    30px
+  ) !important;
 
-width: clamp(
-  235px,
-  20vw,
-  290px
-) !important;
+  width: clamp(
+    235px,
+    20vw,
+    290px
+  ) !important;
 
-scale: 0.82;
-} 
+  transform: scale(0.82);
+  transform-origin: right bottom;
+}
 }
 
 /* --------------------------------------------------------- 
