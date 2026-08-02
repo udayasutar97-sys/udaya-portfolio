@@ -414,6 +414,7 @@ useEffect(() => {
 
   return (
     <main>
+      <ExperienceNotice />
       <IntroLoader />
       <UniverseEffects />
       <PlanetPortal />
