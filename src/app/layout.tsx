@@ -6,7 +6,7 @@ import { UniverseProvider } from "@/components/UI/UniverseContext";
 import { PerformanceProvider } from "@/components/UI/PerformanceManager";
 
 export const metadata: Metadata = {
-  title: "Udaya Sutar | Developer & Researcher",
+  title: "Udaya Sutar | Developer, Researcher & Athlete",
   description:
     "Portfolio of Udaya Sutar — AI developer, full-stack engineer, quantum computing explorer and athlete.",
 };
