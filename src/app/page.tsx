@@ -12,6 +12,7 @@ import ProjectExperience from "@/components/Projects/ProjectExperience";
 import ProjectCarousel from "@/components/Projects/ProjectCarousel";
 import AchievementSection from "@/components/Achievements/AchievementSection";
 import MobileNavigation from "@/components/UI/MobileNavigation";
+import ExperienceNotice from "@/components/UI/ExperienceNotice";
 import {
   ArrowDown,
   ArrowRight,
@@ -180,7 +181,59 @@ export default function Home() {
       >
     >
   >({});
+useEffect(() => {
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+  if (window.location.hash) {
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname +
+        window.location.search,
+    );
+  }
 
+  const resetToHome = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    setActiveSection("home");
+  };
+
+  resetToHome();
+
+  const firstFrame =
+    window.requestAnimationFrame(() => {
+      resetToHome();
+
+      window.requestAnimationFrame(
+        resetToHome,
+      );
+    });
+
+  const delayedReset =
+    window.setTimeout(
+      resetToHome,
+      120,
+    );
+
+  return () => {
+    window.cancelAnimationFrame(
+      firstFrame,
+    );
+
+    window.clearTimeout(
+      delayedReset,
+    );
+  };
+}, []);
   const scrollFrameRef =
     useRef<number | null>(null);
 
