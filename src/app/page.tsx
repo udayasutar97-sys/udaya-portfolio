@@ -234,6 +234,156 @@ useEffect(() => {
     );
   };
 }, []);
+
+
+
+
+
+
+useEffect(() => {
+  const snapSections = [
+    ".hero",
+    ".project-carousel-section",
+    ".about-section",
+    "#achievements",
+    ".trajectory-section",
+  ];
+
+  const updateScrollSnapping = () => {
+    const viewportHeight =
+      window.visualViewport?.height ??
+      window.innerHeight;
+
+    const sections = snapSections
+      .map((selector) =>
+        document.querySelector<HTMLElement>(
+          selector,
+        ),
+      )
+      .filter(
+        (
+          section,
+        ): section is HTMLElement =>
+          section !== null,
+      );
+
+    /*
+     * A small tolerance prevents snapping from
+     * being disabled because of sub-pixel rounding.
+     */
+    const tolerance = 8;
+
+    const sectionDoesNotFit = sections.some(
+      (section) => {
+        const requiredHeight = Math.max(
+          section.scrollHeight,
+          section.getBoundingClientRect()
+            .height,
+        );
+
+        return (
+          requiredHeight >
+          viewportHeight + tolerance
+        );
+      },
+    );
+
+    document.documentElement.classList.toggle(
+      "regular-scroll-mode",
+      sectionDoesNotFit,
+    );
+
+    document.body.classList.toggle(
+      "regular-scroll-mode",
+      sectionDoesNotFit,
+    );
+  };
+
+  let animationFrame: number | null = null;
+
+  const scheduleUpdate = () => {
+    if (animationFrame !== null) {
+      window.cancelAnimationFrame(
+        animationFrame,
+      );
+    }
+
+    animationFrame =
+      window.requestAnimationFrame(() => {
+        updateScrollSnapping();
+        animationFrame = null;
+      });
+  };
+
+  const resizeObserver = new ResizeObserver(
+    scheduleUpdate,
+  );
+
+  snapSections.forEach((selector) => {
+    const section =
+      document.querySelector<HTMLElement>(
+        selector,
+      );
+
+    if (section) {
+      resizeObserver.observe(section);
+    }
+  });
+
+  scheduleUpdate();
+
+  window.addEventListener(
+    "resize",
+    scheduleUpdate,
+  );
+
+  window.visualViewport?.addEventListener(
+    "resize",
+    scheduleUpdate,
+  );
+
+  window.addEventListener(
+    "load",
+    scheduleUpdate,
+  );
+
+  return () => {
+    resizeObserver.disconnect();
+
+    window.removeEventListener(
+      "resize",
+      scheduleUpdate,
+    );
+
+    window.visualViewport?.removeEventListener(
+      "resize",
+      scheduleUpdate,
+    );
+
+    window.removeEventListener(
+      "load",
+      scheduleUpdate,
+    );
+
+    if (animationFrame !== null) {
+      window.cancelAnimationFrame(
+        animationFrame,
+      );
+    }
+
+    document.documentElement.classList.remove(
+      "regular-scroll-mode",
+    );
+
+    document.body.classList.remove(
+      "regular-scroll-mode",
+    );
+  };
+}, []);
+
+
+
+  
   const scrollFrameRef =
     useRef<number | null>(null);
 
