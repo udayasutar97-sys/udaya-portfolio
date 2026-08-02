@@ -7544,3 +7544,244 @@ body.project-experience-active .planet-portal {
     transform: scale(0.76) !important;
   }
 }
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   AUTOMATIC REGULAR-SCROLL FALLBACK
+   Enabled when a full-screen section cannot fit vertically
+   ========================================================= */
+
+html.regular-scroll-mode,
+body.regular-scroll-mode {
+  scroll-snap-type: none !important;
+}
+
+.regular-scroll-mode main,
+.regular-scroll-mode .page-content {
+  scroll-snap-type: none !important;
+}
+
+.regular-scroll-mode .hero,
+.regular-scroll-mode
+  .project-carousel-section,
+.regular-scroll-mode
+  .about-section,
+.regular-scroll-mode
+  #achievements,
+.regular-scroll-mode
+  .trajectory-section,
+.regular-scroll-mode
+  .section-shell {
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
+}
+
+/*
+ * Let sections grow naturally when their content genuinely
+ * cannot fit inside the browser's usable viewport.
+ */
+.regular-scroll-mode .hero,
+.regular-scroll-mode
+  .project-carousel-section,
+.regular-scroll-mode
+  .about-section,
+.regular-scroll-mode
+  #achievements,
+.regular-scroll-mode
+  .trajectory-section {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 100svh !important;
+  overflow: visible !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+
+   UDAYA.SYS CUSTOM SCROLLBAR
+
+   ========================================================= */
+
+/* Chrome, Edge, Brave, Opera, Safari */
+
+::-webkit-scrollbar {
+
+  width: 10px;
+
+  height: 10px;
+
+}
+
+::-webkit-scrollbar-track {
+
+  background:
+
+    linear-gradient(
+
+      180deg,
+
+      rgba(5,10,22,0.95),
+
+      rgba(2,5,14,1)
+
+    );
+
+  border-left: 1px solid rgba(120,160,255,.08);
+
+}
+
+::-webkit-scrollbar-thumb {
+
+  background:
+
+    linear-gradient(
+
+      180deg,
+
+      #9bbdff,
+
+      #5e84ff,
+
+      #335de8
+
+    );
+
+  border-radius: 999px;
+
+  border: 2px solid rgba(5,10,22,.95);
+
+  box-shadow:
+
+    0 0 8px rgba(110,155,255,.45),
+
+    0 0 18px rgba(70,120,255,.22);
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+
+  background:
+
+    linear-gradient(
+
+      180deg,
+
+      #bdd3ff,
+
+      #7ea5ff,
+
+      #4a73ff
+
+    );
+
+  box-shadow:
+
+    0 0 12px rgba(135,180,255,.8),
+
+    0 0 24px rgba(85,140,255,.4);
+
+}
+
+::-webkit-scrollbar-thumb:active {
+
+  background:
+
+    linear-gradient(
+
+      180deg,
+
+      #d6e4ff,
+
+      #9cbcff,
+
+      #638cff
+
+    );
+
+}
+
+::-webkit-scrollbar-corner {
+
+  background: #050a15;
+
+}
+
+/* Firefox */
+
+html {
+
+  scrollbar-width: thin;
+
+  scrollbar-color: #6d93ff #050a15;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(140,180,255,.45) 15%,
+      #8bb5ff 35%,
+      #5f87ff 50%,
+      #8bb5ff 65%,
+      rgba(140,180,255,.45) 85%,
+      transparent
+    );
+
+  border-radius: 999px;
+  border: 2px solid #050a15;
+
+  box-shadow:
+    0 0 10px rgba(120,170,255,.8),
+    inset 0 0 10px rgba(255,255,255,.25);
+}
