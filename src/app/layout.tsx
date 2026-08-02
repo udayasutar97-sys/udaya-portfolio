@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: "Udaya Sutar | Developer, Researcher & Athlete",
   description:
     "Portfolio of Udaya Sutar — AI developer, full-stack engineer, quantum computing explorer and athlete.",
+
+  icons: {
+  icon: "/icon.png",
+  shortcut: "/icon.png",
+  apple: "/icon.png",
+},
 };
 
 export default function RootLayout({
