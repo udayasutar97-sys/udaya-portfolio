@@ -9,7 +9,10 @@ import {
   type ReactNode,
 } from "react";
 
-export type QualityLevel = "high" | "balanced" | "low";
+export type QualityLevel =
+  | "high"
+  | "balanced"
+  | "low";
 
 type PerformanceContextValue = {
   quality: QualityLevel;
@@ -19,39 +22,84 @@ type PerformanceContextValue = {
 };
 
 const PerformanceContext =
-  createContext<PerformanceContextValue | null>(null);
+  createContext<PerformanceContextValue | null>(
+    null,
+  );
+
+type NavigatorWithMemory = Navigator & {
+  deviceMemory?: number;
+};
 
 function detectInitialQuality(): QualityLevel {
   if (typeof window === "undefined") {
     return "balanced";
   }
 
+  const navigatorWithMemory =
+    navigator as NavigatorWithMemory;
+
+  /*
+   * Do not assume missing deviceMemory means 4 GB.
+   * Safari and some privacy-focused browsers do not
+   * expose this property at all.
+   */
   const memory =
-    "deviceMemory" in navigator
-      ? Number(
-          (
-            navigator as Navigator & {
-              deviceMemory?: number;
-            }
-          ).deviceMemory ?? 4,
-        )
-      : 4;
+    typeof navigatorWithMemory.deviceMemory ===
+    "number"
+      ? navigatorWithMemory.deviceMemory
+      : null;
 
-  const cores = navigator.hardwareConcurrency ?? 4;
+  const cores =
+    typeof navigator.hardwareConcurrency ===
+    "number"
+      ? navigator.hardwareConcurrency
+      : null;
 
-  const isMobile =
-    window.matchMedia("(pointer: coarse)").matches ||
-    window.innerWidth < 768;
-
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
+  const coarsePointer = window.matchMedia(
+    "(pointer: coarse)",
   ).matches;
 
-  if (reducedMotion || isMobile || memory <= 4 || cores <= 4) {
+  const narrowScreen =
+    window.innerWidth < 768;
+
+  const tabletWidth =
+    window.innerWidth < 1100;
+
+  /*
+   * Phones should use the lightweight scene.
+   * A touch-enabled laptop is not automatically
+   * treated as a low-performance device.
+   */
+  if (narrowScreen) {
     return "low";
   }
 
-  if (memory >= 8 && cores >= 8 && window.innerWidth >= 1280) {
+  /*
+   * Tablets receive balanced quality.
+   */
+  if (coarsePointer || tabletWidth) {
+    return "balanced";
+  }
+
+  /*
+   * Only classify a desktop as low quality when
+   * the browser provides actual hardware values
+   * and both indicate genuinely limited hardware.
+   */
+  if (
+    memory !== null &&
+    cores !== null &&
+    memory <= 4 &&
+    cores <= 4
+  ) {
+    return "low";
+  }
+
+  /*
+   * Normal desktop and laptop screens receive
+   * full visual quality.
+   */
+  if (window.innerWidth >= 1100) {
     return "high";
   }
 
@@ -72,8 +120,10 @@ export function PerformanceProvider({
   const [reducedMotion, setReducedMotion] =
     useState(false);
 
-  const [isCoarsePointer, setIsCoarsePointer] =
-    useState(false);
+  const [
+    isCoarsePointer,
+    setIsCoarsePointer,
+  ] = useState(false);
 
   useEffect(() => {
     const motionQuery = window.matchMedia(
@@ -85,13 +135,23 @@ export function PerformanceProvider({
     );
 
     const updateEnvironment = () => {
-      setReducedMotion(motionQuery.matches);
-      setIsCoarsePointer(pointerQuery.matches);
-      setQuality(detectInitialQuality());
+      setReducedMotion(
+        motionQuery.matches,
+      );
+
+      setIsCoarsePointer(
+        pointerQuery.matches,
+      );
+
+      setQuality(
+        detectInitialQuality(),
+      );
     };
 
     const handleVisibilityChange = () => {
-      setIsPageVisible(!document.hidden);
+      setIsPageVisible(
+        !document.hidden,
+      );
     };
 
     updateEnvironment();
@@ -156,14 +216,18 @@ export function PerformanceProvider({
   );
 
   return (
-    <PerformanceContext.Provider value={value}>
+    <PerformanceContext.Provider
+      value={value}
+    >
       {children}
     </PerformanceContext.Provider>
   );
 }
 
 export function usePerformance() {
-  const context = useContext(PerformanceContext);
+  const context = useContext(
+    PerformanceContext,
+  );
 
   if (!context) {
     throw new Error(
