@@ -72,7 +72,7 @@ const QUALITY_SETTINGS = {
     stars: 2600,
     sparkles: 130,
     ringSegments: 192,
-    dpr: [0.85, 1.25] as [number, number],
+    dpr: [0.8, 1] as [number, number],
   },
 
   balanced: {
@@ -83,7 +83,7 @@ const QUALITY_SETTINGS = {
     stars: 1500,
     sparkles: 70,
     ringSegments: 128,
-    dpr: [0.75, 1] as [number, number],
+    dpr: [0.7, 0.9] as [number, number],
   },
 
   low: {
@@ -94,7 +94,7 @@ const QUALITY_SETTINGS = {
     stars: 650,
     sparkles: 20,
     ringSegments: 72,
-    dpr: [0.6, 0.8] as [number, number],
+    dpr: [0.55, 0.75] as [number, number],
   },
 };
 
@@ -987,7 +987,11 @@ export default function SpaceScene() {
     isFlyingToPlanet,
     setIsFlyingToPlanet,
   ] = useState(false);
+const sceneContainerRef =
+  useRef<HTMLDivElement>(null);
 
+const [isSceneVisible, setIsSceneVisible] =
+  useState(true);
   const interaction = useRef<InteractionState>({
     pointerX: 0,
     pointerY: 0,
@@ -1007,8 +1011,48 @@ export default function SpaceScene() {
     dragX: 0,
     dragY: 0,
   });
+useEffect(() => {
+  const sceneElement =
+    sceneContainerRef.current;
 
+  if (!sceneElement) {
+    return;
+  }
+
+  const observer =
+    new IntersectionObserver(
+      ([entry]) => {
+        setIsSceneVisible(
+          entry.isIntersecting &&
+            entry.intersectionRatio > 0.05,
+        );
+      },
+      {
+        threshold: [0, 0.05, 0.2],
+        rootMargin: "120px 0px 120px 0px",
+      },
+    );
+
+  observer.observe(sceneElement);
+
+  return () => {
+    observer.disconnect();
+  };
+}, []);
   useEffect(() => {
+    if (!isSceneVisible) {
+  interaction.current.isDragging = false;
+
+  document.body.classList.remove(
+    "space-dragging",
+  );
+
+  document.body.classList.remove(
+    "planet-hovering",
+  );
+
+  return;
+}
     const handlePointerMove = (
       event: PointerEvent,
     ) => {
@@ -1176,10 +1220,15 @@ export default function SpaceScene() {
   }, [planetPortalOpen, isFlyingToPlanet]);
 
   const shouldRenderContinuously =
-    isPageVisible && !planetPortalOpen;
+  isPageVisible &&
+  isSceneVisible &&
+  !planetPortalOpen;
 
   return (
-    <div className="three-scene">
+    <div
+  ref={sceneContainerRef}
+  className="three-scene"
+>
       <Canvas
         camera={{
           position: [0, 0, 8.2],
@@ -1194,7 +1243,7 @@ export default function SpaceScene() {
             : "never"
         }
         gl={{
-          antialias: quality !== "low",
+          antialias: quality !== "high",
           alpha: true,
           powerPreference: "high-performance",
         }}
