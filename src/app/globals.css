@@ -4133,7 +4133,7 @@ min-width: 0;
 overflow-x: auto; 
 overflow-y: hidden; 
 scroll-behavior: smooth; 
-scroll-snap-type: x proximity; 
+scroll-snap-type: none !important; 
 scrollbar-width: none; 
 border: 0; 
 background: transparent; 
@@ -4154,7 +4154,7 @@ align-items: center;
 justify-content: flex-start; 
 gap: 12px; 
 overflow: hidden; 
-scroll-snap-align: start; 
+scroll-snap-align: none !important; 
 } 
 .project-experience-progress button strong { 
 min-width: 0; 
@@ -6295,7 +6295,7 @@ display: flex;
 overflow-x: auto;
 overflow-y: hidden;
 
-scroll-snap-type: x mandatory;
+scroll-snap-type: none !important;
 scrollbar-width: none;
 
 border-left: 1px solid
@@ -6326,7 +6326,7 @@ align-items: center;
 justify-content: flex-start;
 gap: 12px;
 
-scroll-snap-align: center;
+scroll-snap-align: none !important;
 
 color: #61708a;
 
@@ -8170,4 +8170,196 @@ The main three HUD panels remain visible.
 .hud-panel-instructions { 
 display: none !important; 
 } 
+}
+
+/* ==========================================================================
+   FINAL HERO CENTRING + GLOBAL NO-SNAP OVERRIDE
+   Removes page/section snapping while preserving horizontal carousels and
+   keeps the hero identity block large, centred, and responsive.
+   ========================================================================== */
+
+/* Disable vertical/page snapping everywhere. */
+html,
+body,
+main,
+.page-content,
+.hero,
+.project-carousel-section,
+.about-section,
+#achievements,
+.trajectory-section,
+.section-shell,
+.project-experience {
+  scroll-snap-type: none !important;
+}
+
+.hero,
+.project-carousel-section,
+.about-section,
+#achievements,
+.trajectory-section,
+.section-shell {
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Desktop hero: large and visually centred around the viewport midline. */
+@media (min-width: 901px) {
+  .hero {
+    height: 100svh !important;
+    min-height: 100svh !important;
+    max-height: none !important;
+    padding-top: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .hero-content {
+    position: absolute !important;
+    top: 50% !important;
+    left: 8vw !important;
+    bottom: auto !important;
+    width: min(900px, calc(100% - 16vw)) !important;
+    max-width: 900px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: translateY(-46%) !important;
+    transform-origin: left center !important;
+  }
+
+  .hero-content .eyebrow {
+    margin-bottom: clamp(20px, 2.5vh, 32px) !important;
+  }
+
+  .hero-content h1,
+  .hero h1 {
+    max-width: none !important;
+    font-size: clamp(104px, 10vw, 172px) !important;
+    line-height: 0.77 !important;
+  }
+
+  .hero-description {
+    width: min(700px, 100%) !important;
+    margin-top: clamp(24px, 3vh, 40px) !important;
+  }
+
+  .hero-description .role {
+    font-size: clamp(10px, 0.78vw, 13px) !important;
+    line-height: 1.55 !important;
+  }
+
+  .hero-description .summary {
+    max-width: 660px !important;
+    margin: clamp(15px, 2vh, 23px) 0 clamp(21px, 2.8vh, 33px) !important;
+    font-size: clamp(11px, 0.86vw, 14px) !important;
+    line-height: 1.65 !important;
+  }
+
+  .hero-buttons {
+    margin-top: 0 !important;
+  }
+
+  .hero-buttons a,
+  .hero-buttons button {
+    min-height: clamp(56px, 7vh, 72px) !important;
+    padding-inline: clamp(24px, 2.3vw, 38px) !important;
+  }
+}
+
+/* Short laptops: centred and slightly compact, never pushed off the top. */
+@media (min-width: 901px) and (max-height: 820px) {
+  .hero-content {
+    top: 50% !important;
+    transform: translateY(-45%) !important;
+  }
+
+  .hero-content h1,
+  .hero h1 {
+    font-size: clamp(82px, 8.5vw, 126px) !important;
+    line-height: 0.77 !important;
+  }
+
+  .hero-content .eyebrow {
+    margin-bottom: clamp(11px, 1.6vh, 18px) !important;
+  }
+
+  .hero-description {
+    margin-top: clamp(11px, 1.8vh, 20px) !important;
+  }
+
+  .hero-description .role {
+    font-size: clamp(8px, 0.7vw, 11px) !important;
+    line-height: 1.45 !important;
+  }
+
+  .hero-description .summary {
+    max-width: 620px !important;
+    margin: clamp(9px, 1.4vh, 15px) 0 clamp(13px, 2vh, 21px) !important;
+    font-size: clamp(9px, 0.73vw, 11px) !important;
+    line-height: 1.48 !important;
+  }
+
+  .hero-buttons a,
+  .hero-buttons button {
+    min-height: clamp(46px, 6vh, 56px) !important;
+    padding-inline: clamp(19px, 1.9vw, 28px) !important;
+  }
+}
+
+/* Very short desktop windows. */
+@media (min-width: 901px) and (max-height: 680px) {
+  .hero-content {
+    top: 50% !important;
+    transform: translateY(-44%) !important;
+  }
+
+  .hero-content h1,
+  .hero h1 {
+    font-size: clamp(66px, 7vw, 98px) !important;
+  }
+
+  .hero-content .eyebrow {
+    margin-bottom: 8px !important;
+  }
+
+  .hero-description {
+    margin-top: 8px !important;
+  }
+
+  .hero-description .summary {
+    margin: 7px 0 11px !important;
+    line-height: 1.4 !important;
+  }
+
+  .hero-buttons a,
+  .hero-buttons button {
+    min-height: 42px !important;
+  }
+
+  .hero-data {
+    bottom: 12px !important;
+  }
+}
+
+/* Mobile retains the existing stacked, free-scrolling composition. */
+@media (max-width: 900px) {
+  .hero {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 100svh !important;
+    overflow: hidden !important;
+  }
+
+  .hero-content {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+  }
 }
