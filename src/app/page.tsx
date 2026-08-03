@@ -13,6 +13,7 @@ import ProjectCarousel from "@/components/Projects/ProjectCarousel";
 import AchievementSection from "@/components/Achievements/AchievementSection";
 import MobileNavigation from "@/components/UI/MobileNavigation";
 import ExperienceNotice from "@/components/UI/ExperienceNotice";
+import DesktopInstructions from "@/components/UI/DesktopInstructions";
 import {
   ArrowDown,
   ArrowRight,
@@ -238,8 +239,6 @@ useEffect(() => {
 
 
 
-
-
 useEffect(() => {
   const snapSections = [
     ".hero",
@@ -382,8 +381,6 @@ useEffect(() => {
 }, []);
 
 
-
-  
   const scrollFrameRef =
     useRef<number | null>(null);
 
@@ -768,6 +765,7 @@ useEffect(() => {
         </div>
 
         <InteractiveHUD />
+        <DesktopInstructions />
 
         <div className="hero-content">
           <motion.div
