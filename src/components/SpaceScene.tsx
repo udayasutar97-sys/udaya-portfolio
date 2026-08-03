@@ -72,7 +72,7 @@ const QUALITY_SETTINGS = {
     stars: 2600,
     sparkles: 130,
     ringSegments: 192,
-    dpr: [0.8, 1] as [number, number],
+    dpr: [0.85, 1.25] as [number, number],
   },
 
   balanced: {
@@ -83,7 +83,7 @@ const QUALITY_SETTINGS = {
     stars: 1500,
     sparkles: 70,
     ringSegments: 128,
-    dpr: [0.7, 0.9] as [number, number],
+    dpr: [0.75, 1] as [number, number],
   },
 
   low: {
@@ -94,9 +94,19 @@ const QUALITY_SETTINGS = {
     stars: 650,
     sparkles: 20,
     ringSegments: 72,
-    dpr: [0.55, 0.75] as [number, number],
+    dpr: [0.6, 0.8] as [number, number],
   },
 };
+
+/*
+|--------------------------------------------------------------------------
+| CAMERA
+|--------------------------------------------------------------------------
+|
+| Slightly stronger pointer offsets and higher damping values make the
+| whole scene respond faster without making the camera feel twitchy.
+|
+*/
 
 function CameraRig({
   interaction,
@@ -108,7 +118,9 @@ function CameraRig({
 }) {
   const { camera } = useThree();
 
-  const lookTarget = useRef(new THREE.Vector3(2.05, 0, 0));
+  const lookTarget = useRef(
+    new THREE.Vector3(2.05, 0, 0),
+  );
 
   useFrame((state, delta) => {
     const interactionState = interaction.current;
@@ -117,20 +129,29 @@ function CameraRig({
     const dragStrength = reducedMotion ? 0.35 : 1;
 
     const pointerTargetX =
-      interactionState.pointerX * 0.34 * pointerStrength;
+      interactionState.pointerX *
+      0.38 *
+      pointerStrength;
 
     const pointerTargetY =
-      -interactionState.pointerY * 0.22 * pointerStrength;
+      -interactionState.pointerY *
+      0.25 *
+      pointerStrength;
 
     const dragTargetX =
-      interactionState.dragX * 0.85 * dragStrength;
+      interactionState.dragX *
+      0.85 *
+      dragStrength;
 
     const dragTargetY =
-      -interactionState.dragY * 0.52 * dragStrength;
+      -interactionState.dragY *
+      0.52 *
+      dragStrength;
 
     const idleBreathing = reducedMotion
       ? 0
-      : Math.sin(state.clock.elapsedTime * 0.42) * 0.035;
+      : Math.sin(state.clock.elapsedTime * 0.42) *
+        0.035;
 
     const targetX = planetPortalOpen
       ? 1.68
@@ -138,12 +159,25 @@ function CameraRig({
 
     const targetY = planetPortalOpen
       ? 0
-      : pointerTargetY + dragTargetY + idleBreathing;
+      : pointerTargetY +
+        dragTargetY +
+        idleBreathing;
 
     const targetZ = planetPortalOpen ? 4.55 : 8.2;
 
-    const positionDamping = planetPortalOpen ? 5.8 : 2.6;
-    const lookDamping = planetPortalOpen ? 6.5 : 3.5;
+    /*
+     * Higher damping means the camera reaches the target faster.
+     * Previous normal values:
+     * position = 2.6
+     * look = 3.5
+     */
+    const positionDamping = planetPortalOpen
+      ? 6.4
+      : 3.25;
+
+    const lookDamping = planetPortalOpen
+      ? 7
+      : 4.15;
 
     camera.position.x = THREE.MathUtils.damp(
       camera.position.x,
@@ -186,6 +220,12 @@ function CameraRig({
   return null;
 }
 
+/*
+|--------------------------------------------------------------------------
+| PLANET
+|--------------------------------------------------------------------------
+*/
+
 function Planet({
   interaction,
   coreMode,
@@ -205,9 +245,11 @@ function Planet({
   const groupRef = useRef<THREE.Group>(null);
   const planetRef = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
-  const outerAtmosphereRef = useRef<THREE.Mesh>(null);
+  const outerAtmosphereRef =
+    useRef<THREE.Mesh>(null);
   const primaryRingRef = useRef<THREE.Mesh>(null);
-  const secondaryRingRef = useRef<THREE.Mesh>(null);
+  const secondaryRingRef =
+    useRef<THREE.Mesh>(null);
 
   const planetMaterialRef =
     useRef<THREE.MeshStandardMaterial>(null);
@@ -225,16 +267,25 @@ function Planet({
     useRef<THREE.MeshBasicMaterial>(null);
 
   const planetActivityRef = useRef(0);
-  const flightTimeoutRef = useRef<number | null>(null);
+  const flightTimeoutRef = useRef<number | null>(
+    null,
+  );
 
   useEffect(() => {
     return () => {
       if (flightTimeoutRef.current !== null) {
-        window.clearTimeout(flightTimeoutRef.current);
+        window.clearTimeout(
+          flightTimeoutRef.current,
+        );
       }
 
-      document.body.classList.remove("planet-hovering");
-      document.body.classList.remove("planet-flight-active");
+      document.body.classList.remove(
+        "planet-hovering",
+      );
+
+      document.body.classList.remove(
+        "planet-flight-active",
+      );
     };
   }, []);
 
@@ -247,23 +298,26 @@ function Planet({
 
     const proximityEase = proximity * proximity;
 
-    
-    const satelliteActivityTarget = proximityEase * 0.3;
+    const satelliteActivityTarget =
+      proximityEase * 0.34;
 
-    planetActivityRef.current = THREE.MathUtils.damp(
-      planetActivityRef.current,
-      satelliteActivityTarget,
-      4,
-      delta,
-    );
+    planetActivityRef.current =
+      THREE.MathUtils.damp(
+        planetActivityRef.current,
+        satelliteActivityTarget,
+        4.6,
+        delta,
+      );
 
     const hoverSpeedMultiplier = reducedMotion
       ? 1
-      : 1 + proximityEase * 0.38;
+      : 1 + proximityEase * 0.42;
 
     const hoverPulse = reducedMotion
       ? 0
-      : Math.sin(state.clock.elapsedTime * 2.6) *
+      : Math.sin(
+          state.clock.elapsedTime * 2.6,
+        ) *
         proximityEase *
         0.007;
 
@@ -345,8 +399,10 @@ function Planet({
 
       planetMaterialRef.current.emissiveIntensity =
         THREE.MathUtils.damp(
-          planetMaterialRef.current.emissiveIntensity,
-          baseEmissiveIntensity + proximityEase * 0.34,
+          planetMaterialRef.current
+            .emissiveIntensity,
+          baseEmissiveIntensity +
+            proximityEase * 0.34,
           4,
           delta,
         );
@@ -367,7 +423,8 @@ function Planet({
       atmosphereMaterialRef.current.opacity =
         THREE.MathUtils.damp(
           atmosphereMaterialRef.current.opacity,
-          baseAtmosphereOpacity + proximityEase * 0.045,
+          baseAtmosphereOpacity +
+            proximityEase * 0.045,
           4,
           delta,
         );
@@ -387,8 +444,10 @@ function Planet({
 
       outerAtmosphereMaterialRef.current.opacity =
         THREE.MathUtils.damp(
-          outerAtmosphereMaterialRef.current.opacity,
-          baseOuterOpacity + proximityEase * 0.06,
+          outerAtmosphereMaterialRef.current
+            .opacity,
+          baseOuterOpacity +
+            proximityEase * 0.06,
           4,
           delta,
         );
@@ -409,7 +468,8 @@ function Planet({
       primaryRingMaterialRef.current.opacity =
         THREE.MathUtils.damp(
           primaryRingMaterialRef.current.opacity,
-          baseRingOpacity + proximityEase * 0.18,
+          baseRingOpacity +
+            proximityEase * 0.18,
           4,
           delta,
         );
@@ -423,7 +483,8 @@ function Planet({
 
       secondaryRingMaterialRef.current.opacity =
         THREE.MathUtils.damp(
-          secondaryRingMaterialRef.current.opacity,
+          secondaryRingMaterialRef.current
+            .opacity,
           0.16 + proximityEase * 0.14,
           4,
           delta,
@@ -431,16 +492,25 @@ function Planet({
     }
 
     if (groupRef.current) {
-      const pointerTiltMultiplier = reducedMotion ? 0.25 : 1;
+      const pointerTiltMultiplier = reducedMotion
+        ? 0.25
+        : 1;
 
+      /*
+       * Slightly increased cursor tilt.
+       *
+       * Previous:
+       * X = 0.16
+       * Y = 0.22
+       */
       const pointerTiltX =
         -interactionState.pointerY *
-        0.16 *
+        0.19 *
         pointerTiltMultiplier;
 
       const pointerTiltY =
         interactionState.pointerX *
-        0.22 *
+        0.26 *
         pointerTiltMultiplier;
 
       const dragTiltX =
@@ -449,11 +519,15 @@ function Planet({
       const dragTiltY =
         interactionState.dragX * 0.46;
 
+      /*
+       * Increased damping from 3.2 to 4.
+       * This makes the planet and all child satellites respond faster.
+       */
       groupRef.current.rotation.x =
         THREE.MathUtils.damp(
           groupRef.current.rotation.x,
           0.08 + pointerTiltX + dragTiltX,
-          3.2,
+          4,
           delta,
         );
 
@@ -461,31 +535,36 @@ function Planet({
         THREE.MathUtils.damp(
           groupRef.current.rotation.y,
           -0.3 + pointerTiltY + dragTiltY,
-          3.2,
+          4,
           delta,
         );
 
       groupRef.current.rotation.z =
         THREE.MathUtils.damp(
           groupRef.current.rotation.z,
-          -0.12 + interactionState.dragX * 0.08,
-          3,
+          -0.12 +
+            interactionState.dragX * 0.08,
+          3.6,
           delta,
         );
 
       const floatingY = reducedMotion
         ? 0
-        : Math.sin(state.clock.elapsedTime * 0.55) * 0.09;
+        : Math.sin(
+            state.clock.elapsedTime * 0.55,
+          ) * 0.09;
 
       const floatingX = reducedMotion
         ? 0
-        : Math.cos(state.clock.elapsedTime * 0.38) * 0.045;
+        : Math.cos(
+            state.clock.elapsedTime * 0.38,
+          ) * 0.045;
 
       groupRef.current.position.x =
         THREE.MathUtils.damp(
           groupRef.current.position.x,
           2.3 + floatingX,
-          2.8,
+          3.2,
           delta,
         );
 
@@ -493,7 +572,7 @@ function Planet({
         THREE.MathUtils.damp(
           groupRef.current.position.y,
           floatingY,
-          2.8,
+          3.2,
           delta,
         );
     }
@@ -510,28 +589,38 @@ function Planet({
     }
 
     setIsFlyingToPlanet(true);
-    document.body.classList.add("planet-flight-active");
 
-    flightTimeoutRef.current = window.setTimeout(() => {
-      openPlanetPortal();
-      setIsFlyingToPlanet(false);
+    document.body.classList.add(
+      "planet-flight-active",
+    );
 
-      document.body.classList.remove(
-        "planet-flight-active",
-      );
+    flightTimeoutRef.current =
+      window.setTimeout(() => {
+        openPlanetPortal();
+        setIsFlyingToPlanet(false);
 
-      flightTimeoutRef.current = null;
-    }, 900);
+        document.body.classList.remove(
+          "planet-flight-active",
+        );
+
+        flightTimeoutRef.current = null;
+      }, 900);
   };
 
   const handlePlanetPointerOver = () => {
     interaction.current.planetHovered = true;
-    document.body.classList.add("planet-hovering");
+
+    document.body.classList.add(
+      "planet-hovering",
+    );
   };
 
   const handlePlanetPointerOut = () => {
     interaction.current.planetHovered = false;
-    document.body.classList.remove("planet-hovering");
+
+    document.body.classList.remove(
+      "planet-hovering",
+    );
   };
 
   return (
@@ -541,7 +630,6 @@ function Planet({
         activityRef={planetActivityRef}
       />
 
-      {}
       <mesh
         onClick={(event) => {
           event.stopPropagation();
@@ -604,7 +692,10 @@ function Planet({
         />
       </mesh>
 
-      <mesh ref={outerAtmosphereRef} scale={1.047}>
+      <mesh
+        ref={outerAtmosphereRef}
+        scale={1.047}
+      >
         <sphereGeometry
           args={[
             2.15,
@@ -699,6 +790,12 @@ function Planet({
   );
 }
 
+/*
+|--------------------------------------------------------------------------
+| FLOATING PARTICLES
+|--------------------------------------------------------------------------
+*/
+
 function FloatingParticles({
   interaction,
   quality,
@@ -746,42 +843,61 @@ function FloatingParticles({
     const motionMultiplier = reducedMotion ? 0.2 : 1;
 
     particlesRef.current.rotation.y +=
-      delta * 0.009 * motionMultiplier;
+      delta * 0.011 * motionMultiplier;
 
+    /*
+     * Increased pointer influence and damping.
+     */
     particlesRef.current.rotation.x =
       THREE.MathUtils.damp(
         particlesRef.current.rotation.x,
-        (interactionState.pointerY * 0.07 +
+        (interactionState.pointerY * 0.085 +
           interactionState.dragY * 0.16) *
           motionMultiplier,
-        2,
+        2.6,
         delta,
       );
 
     particlesRef.current.rotation.z =
       THREE.MathUtils.damp(
         particlesRef.current.rotation.z,
-        (-interactionState.pointerX * 0.045 -
+        (-interactionState.pointerX * 0.058 -
           interactionState.dragX * 0.12) *
           motionMultiplier,
-        2,
+        2.6,
         delta,
       );
 
+    /*
+     * Cursor now shifts particles horizontally too,
+     * rather than only drag moving their position.
+     */
     particlesRef.current.position.x =
       THREE.MathUtils.damp(
         particlesRef.current.position.x,
-        interactionState.dragX *
-          0.5 *
+        (interactionState.pointerX * 0.12 +
+          interactionState.dragX * 0.5) *
           motionMultiplier,
-        2,
+        2.6,
         delta,
       );
 
-    particlesRef.current.position.y = reducedMotion
+    const floatingParticleY = reducedMotion
       ? 0
-      : Math.sin(state.clock.elapsedTime * 0.15) *
-        0.06;
+      : Math.sin(
+          state.clock.elapsedTime * 0.15,
+        ) * 0.06;
+
+    particlesRef.current.position.y =
+      THREE.MathUtils.damp(
+        particlesRef.current.position.y,
+        floatingParticleY -
+          interactionState.pointerY *
+            0.075 *
+            motionMultiplier,
+        2.4,
+        delta,
+      );
   });
 
   return (
@@ -806,6 +922,12 @@ function FloatingParticles({
   );
 }
 
+/*
+|--------------------------------------------------------------------------
+| STARS AND SPARKLES
+|--------------------------------------------------------------------------
+*/
+
 function SpaceLayer({
   interaction,
   quality,
@@ -825,23 +947,52 @@ function SpaceLayer({
     const interactionState = interaction.current;
     const motionMultiplier = reducedMotion ? 0.2 : 1;
 
+    /*
+     * Slightly stronger movement and faster damping.
+     *
+     * Old damping: 1.6
+     * New damping: 2.15
+     */
     starsGroupRef.current.rotation.x =
       THREE.MathUtils.damp(
         starsGroupRef.current.rotation.x,
-        (interactionState.pointerY * 0.025 +
+        (interactionState.pointerY * 0.032 +
           interactionState.dragY * 0.09) *
           motionMultiplier,
-        1.6,
+        2.15,
         delta,
       );
 
     starsGroupRef.current.rotation.y =
       THREE.MathUtils.damp(
         starsGroupRef.current.rotation.y,
-        (interactionState.pointerX * 0.035 +
+        (interactionState.pointerX * 0.044 +
           interactionState.dragX * 0.12) *
           motionMultiplier,
-        1.6,
+        2.15,
+        delta,
+      );
+
+    /*
+     * Tiny position parallax gives the particles more depth.
+     */
+    starsGroupRef.current.position.x =
+      THREE.MathUtils.damp(
+        starsGroupRef.current.position.x,
+        -interactionState.pointerX *
+          0.055 *
+          motionMultiplier,
+        2,
+        delta,
+      );
+
+    starsGroupRef.current.position.y =
+      THREE.MathUtils.damp(
+        starsGroupRef.current.position.y,
+        interactionState.pointerY *
+          0.04 *
+          motionMultiplier,
+        2,
         delta,
       );
   });
@@ -870,6 +1021,12 @@ function SpaceLayer({
   );
 }
 
+/*
+|--------------------------------------------------------------------------
+| SCENE
+|--------------------------------------------------------------------------
+*/
+
 function Scene({
   interaction,
   coreMode,
@@ -895,8 +1052,15 @@ function Scene({
       state.dragX += state.velocityX;
       state.dragY += state.velocityY;
 
-      const inertia = Math.pow(0.92, delta * 60);
-      const settling = Math.pow(0.985, delta * 60);
+      const inertia = Math.pow(
+        0.92,
+        delta * 60,
+      );
+
+      const settling = Math.pow(
+        0.985,
+        delta * 60,
+      );
 
       state.velocityX *= inertia;
       state.velocityY *= inertia;
@@ -944,7 +1108,9 @@ function Scene({
         interaction={interaction}
         coreMode={coreMode}
         openPlanetPortal={openPlanetPortal}
-        setIsFlyingToPlanet={setIsFlyingToPlanet}
+        setIsFlyingToPlanet={
+          setIsFlyingToPlanet
+        }
         quality={quality}
         reducedMotion={reducedMotion}
       />
@@ -963,10 +1129,19 @@ function Scene({
         color="#694eff"
       />
 
-      <fog attach="fog" args={["#03050a", 11, 25]} />
+      <fog
+        attach="fog"
+        args={["#03050a", 11, 25]}
+      />
     </>
   );
 }
+
+/*
+|--------------------------------------------------------------------------
+| MAIN SPACE SCENE
+|--------------------------------------------------------------------------
+*/
 
 export default function SpaceScene() {
   const {
@@ -987,11 +1162,7 @@ export default function SpaceScene() {
     isFlyingToPlanet,
     setIsFlyingToPlanet,
   ] = useState(false);
-const sceneContainerRef =
-  useRef<HTMLDivElement>(null);
 
-const [isSceneVisible, setIsSceneVisible] =
-  useState(true);
   const interaction = useRef<InteractionState>({
     pointerX: 0,
     pointerY: 0,
@@ -1011,48 +1182,8 @@ const [isSceneVisible, setIsSceneVisible] =
     dragX: 0,
     dragY: 0,
   });
-useEffect(() => {
-  const sceneElement =
-    sceneContainerRef.current;
 
-  if (!sceneElement) {
-    return;
-  }
-
-  const observer =
-    new IntersectionObserver(
-      ([entry]) => {
-        setIsSceneVisible(
-          entry.isIntersecting &&
-            entry.intersectionRatio > 0.05,
-        );
-      },
-      {
-        threshold: [0, 0.05, 0.2],
-        rootMargin: "120px 0px 120px 0px",
-      },
-    );
-
-  observer.observe(sceneElement);
-
-  return () => {
-    observer.disconnect();
-  };
-}, []);
   useEffect(() => {
-    if (!isSceneVisible) {
-  interaction.current.isDragging = false;
-
-  document.body.classList.remove(
-    "space-dragging",
-  );
-
-  document.body.classList.remove(
-    "planet-hovering",
-  );
-
-  return;
-}
     const handlePointerMove = (
       event: PointerEvent,
     ) => {
@@ -1061,10 +1192,11 @@ useEffect(() => {
         2;
 
       interaction.current.pointerY =
-        (event.clientY / window.innerHeight - 0.5) *
+        (event.clientY /
+          window.innerHeight -
+          0.5) *
         2;
 
-      
       const normalizedPlanetX = 0.5;
       const normalizedPlanetY = 0;
 
@@ -1117,7 +1249,6 @@ useEffect(() => {
         dragStart.current.dragY +
         differenceY * 2.1;
 
-      
       interaction.current.velocityX =
         (nextDragX -
           interaction.current.dragX) *
@@ -1220,15 +1351,10 @@ useEffect(() => {
   }, [planetPortalOpen, isFlyingToPlanet]);
 
   const shouldRenderContinuously =
-  isPageVisible &&
-  isSceneVisible &&
-  !planetPortalOpen;
+    isPageVisible && !planetPortalOpen;
 
   return (
-    <div
-  ref={sceneContainerRef}
-  className="three-scene"
->
+    <div className="three-scene">
       <Canvas
         camera={{
           position: [0, 0, 8.2],
@@ -1243,7 +1369,7 @@ useEffect(() => {
             : "never"
         }
         gl={{
-          antialias: quality !== "high",
+          antialias: quality !== "low",
           alpha: true,
           powerPreference: "high-performance",
         }}
@@ -1254,7 +1380,9 @@ useEffect(() => {
           openPlanetPortal={openPlanetPortal}
           planetPortalOpen={planetPortalOpen}
           isFlyingToPlanet={isFlyingToPlanet}
-          setIsFlyingToPlanet={setIsFlyingToPlanet}
+          setIsFlyingToPlanet={
+            setIsFlyingToPlanet
+          }
           quality={quality}
           reducedMotion={reducedMotion}
         />
